@@ -1,47 +1,35 @@
 package co.feip.fefu2025
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import co.feip.fefu2025.ui.theme.FEFU2025AndroidBaseRepoTheme
+import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
+import kotlin.random.Random
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            FEFU2025AndroidBaseRepoTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "FEIP",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+        setContentView(R.layout.activity_main)
+
+        val button = findViewById<Button>(R.id.addNewFilter)
+        button.setOnClickListener {
+          //  addNewFilter()
         }
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    FEFU2025AndroidBaseRepoTheme {
-        Greeting("Android")
-    }
+//    private fun addNewFilter() {
+//        val customLayout = findViewById<CustomLayout>(R.id.customLayout)
+//        val randomNewFilter = Filter(this).apply {
+//            setItem(
+//                name = genres.random(),
+//                color = android.graphics.Color.argb(255,
+//                    Random.nextInt(256),
+//                    Random.nextInt(256),
+//                    Random.nextInt(256)
+//                ),
+//                percentage = Random.nextFloat() * 100
+//            )
+//        }
+//        customLayout.addView(randomNewFilter)
+//    }
 }

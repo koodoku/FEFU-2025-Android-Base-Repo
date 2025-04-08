@@ -1,4 +1,4 @@
-package co.feip.fefu2025.anime_ui
+package co.feip.fefu2025.presentation.screen.main_screen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.feip.fefu2025.R
+import co.feip.fefu2025.presentation.screen.details.components.AnimeCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

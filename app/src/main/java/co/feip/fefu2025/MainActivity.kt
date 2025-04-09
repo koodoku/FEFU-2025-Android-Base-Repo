@@ -8,6 +8,7 @@ import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -20,15 +21,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun addNewFilter() {
         val customLayout = findViewById<CustomLayout>(R.id.customLayout)
-        val randomNewFilter = Filter(this).apply {
-            setItem(
-                name = genres.random(),
-                color = android.graphics.Color.argb(255,
+        val randomNewFilter = CustomFilterTag(this).apply {
+            setBackgroundRes(
+                android.graphics.Color.argb(
+                    255,
                     Random.nextInt(256),
                     Random.nextInt(256),
                     Random.nextInt(256)
-                ),
-                percentage = Random.nextFloat() * 100
+                )
+            )
+            setGenreName(
+                genres.random()
             )
         }
         customLayout.addView(randomNewFilter)

@@ -31,9 +31,11 @@ fun AnimeCard(
     genres: List<String>,
     rating: Float,
     imageRes: Int,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
+        onClick = onClick,
         modifier = modifier
             .width(160.dp)
             .height(IntrinsicSize.Max),
@@ -104,6 +106,7 @@ fun PreviewAnimeCard() {
         genres = listOf("Комедия", "Музыка", "Повседневность"),
         rating = 8.8f,
         imageRes = R.drawable.boochi,
-        modifier = Modifier.width(150.dp)
+        modifier = Modifier.width(150.dp),
+        onClick = {},
     )
 }

@@ -1,44 +1,39 @@
 package co.feip.fefu2025.presentation.screen.main_screen
 
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.feip.fefu2025.domain.model.Anime
 import co.feip.fefu2025.domain.usecase.GetAnimeListUseCase
 import kotlinx.coroutines.launch
+import java.time.temporal.TemporalQuery
 
-class AnimeListViewModel(
-    private val getAnimeListUseCase: GetAnimeListUseCase
-) : ViewModel() {
+class AnimeListViewModel() : ViewModel() {
+    private val getAnimeListUseCase = GetAnimeListUseCase()
 
-    private val _animeList = mutableStateOf<List<Anime>>(emptyList())
-    val animeList: State<List<Anime>> = _animeList
-
-    private val _searchQuery = mutableStateOf("")
-    val searchQuery: State<String> = _searchQuery
+    var state by mutableStateOf<MainScreenState>(MainScreenState())
+        private set
 
     init {
         loadAnimeList()
     }
 
-    fun loadAnimeList() {
+    private fun loadAnimeList() {
         viewModelScope.launch {
-            _animeList.value = getAnimeListUseCase()
+            state = state.copy(
+                animeList = getAnimeListUseCase()
+            )
         }
     }
 
-    fun onSearchQueryChanged(query: String) {
-        _searchQuery.value = query
-    }
-
-    fun getFilteredAnimeList(): List<Anime> {
-        return if (searchQuery.value.isEmpty()) {
-            animeList.value
-        } else {
-            animeList.value.filter {
-                it.title.contains(searchQuery.value, ignoreCase = true)
-            }
+    fun onQueryChange(query: String){
+        viewModelScope.launch {
+            state = state.copy(
+                searchQuery = query
+            )
         }
     }
 }

@@ -1,4 +1,4 @@
-package co.feip.fefu2025.ui.widgets
+package co.feip.fefu2025
 
 import android.content.Context
 import android.util.AttributeSet

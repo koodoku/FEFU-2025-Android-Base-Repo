@@ -1,10 +1,9 @@
 package co.feip.fefu2025.domain.usecase
 
-import co.feip.fefu2025.domain.model.Anime
-import co.feip.fefu2025.domain.repository.AnimeRepository
+import co.feip.fefu2025.domain.model.AnimeDetails
+import co.feip.fefu2025.data.repository.AnimeRepositoryImpl
 
-class GetAnimeDetailsUseCase(private val repository: AnimeRepository) {
-    operator fun invoke(animeId: Int): Anime? = repository.getAnimeById(animeId)
-    fun getRecommendations(currentAnimeId: Int): List<Anime> =
-        repository.getRecommendations(currentAnimeId)
+class GetAnimeDetailsUseCase() {
+    private val repository = AnimeRepositoryImpl()
+    operator fun invoke(animeId: Int): AnimeDetails? = repository.getAnimeById(animeId)
 }

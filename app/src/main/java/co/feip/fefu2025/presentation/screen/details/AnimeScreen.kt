@@ -1,4 +1,4 @@
-package co.feip.fefu2025.anime_ui
+package co.feip.fefu2025.presentation.screen.details
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -16,6 +16,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import co.feip.fefu2025.R
+import co.feip.fefu2025.presentation.screen.details.components.AnimeCard
+import co.feip.fefu2025.presentation.screen.details.components.RatingChart
+import co.feip.fefu2025.presentation.screen.main_screen.AnimeCardData
 
 @Preview
 @Composable
@@ -34,16 +37,66 @@ fun AnimeScreen(
     )
 
     val recommendations = listOf(
-        AnimeCardData("Ghost in the Shell", listOf("Киберпанк", "Экшен", "Детектив"), 8.3f, R.drawable.ghost_in_the_shell),
-        AnimeCardData("Call of the Night", listOf("Романтика", "Сверхъестественное"), 8.1f, R.drawable.call_of_the_night),
-        AnimeCardData("Nier Automata Ver 1.1", listOf("Фантастика", "Экшен", "Драма"), 8.5f, R.drawable.nier),
-        AnimeCardData("Bocchi the Rock!", listOf("Комедия", "Музыка", "Повседневность"), 8.8f, R.drawable.boochi),
-        AnimeCardData("Miss Kobayashi's Dragon Maid", listOf("Комедия", "Фэнтези", "Сэйнэн"), 8.4f, R.drawable.kobayashi),
-        AnimeCardData("Nichijou: My Ordinary Life", listOf("Комедия", "Повседневность"), 8.6f, R.drawable.nichijou),
-        AnimeCardData("My Dress-Up Darling", listOf("Драма", "Романтика", "Повседневность"), 8.3f, R.drawable.farfor),
-        AnimeCardData("Horimiya", listOf("Романтика", "Комедия", "Школа"), 8.7f, R.drawable.horimiya),
-        AnimeCardData("My Deer Friend Nokotan", listOf("Комедия", "Повседневность"), 8.2f, R.drawable.shikanoko),
-        AnimeCardData("Mushoku Tensei: Jobless Reincarnation", listOf("Исекай", "Комедия", "Драма"), 8.0f, R.drawable.reink)
+        AnimeCardData(
+            "Ghost in the Shell",
+            listOf("Киберпанк", "Экшен", "Детектив"),
+            8.3f,
+            R.drawable.ghost_in_the_shell
+        ),
+        AnimeCardData(
+            "Call of the Night",
+            listOf("Романтика", "Сверхъестественное"),
+            8.1f,
+            R.drawable.call_of_the_night
+        ),
+        AnimeCardData(
+            "Nier Automata Ver 1.1",
+            listOf("Фантастика", "Экшен", "Драма"),
+            8.5f,
+            R.drawable.nier
+        ),
+        AnimeCardData(
+            "Bocchi the Rock!",
+            listOf("Комедия", "Музыка", "Повседневность"),
+            8.8f,
+            R.drawable.boochi
+        ),
+        AnimeCardData(
+            "Miss Kobayashi's Dragon Maid",
+            listOf("Комедия", "Фэнтези", "Сэйнэн"),
+            8.4f,
+            R.drawable.kobayashi
+        ),
+        AnimeCardData(
+            "Nichijou: My Ordinary Life",
+            listOf("Комедия", "Повседневность"),
+            8.6f,
+            R.drawable.nichijou
+        ),
+        AnimeCardData(
+            "My Dress-Up Darling",
+            listOf("Драма", "Романтика", "Повседневность"),
+            8.3f,
+            R.drawable.farfor
+        ),
+        AnimeCardData(
+            "Horimiya",
+            listOf("Романтика", "Комедия", "Школа"),
+            8.7f,
+            R.drawable.horimiya
+        ),
+        AnimeCardData(
+            "My Deer Friend Nokotan",
+            listOf("Комедия", "Повседневность"),
+            8.2f,
+            R.drawable.shikanoko
+        ),
+        AnimeCardData(
+            "Mushoku Tensei: Jobless Reincarnation",
+            listOf("Исекай", "Комедия", "Драма"),
+            8.0f,
+            R.drawable.reink
+        )
     )
 
     Column(

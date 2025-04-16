@@ -1,12 +1,11 @@
 package co.feip.fefu2025.anime_ui
 
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,28 +22,45 @@ import androidx.compose.ui.viewinterop.AndroidView
 import co.feip.fefu2025.CustomLayout
 import co.feip.fefu2025.R
 
+@Preview
 @Composable
 fun AnimeScreen(
-    title: String,
-    genres: List<String>,
-    rating: Float,
-    description: String,
-    year: Int,
-    episodes: Int,
-    imageRes: Int
+    title: String = "Bocchi the Rock!",
+    genres: List<String> = listOf("Комедия", "Музыка", "Повседневность"),
+    rating: Float = 8.8f,
+    description: String = "Хитори Гото с детства мечтает играть в рок-группе и ради этого чуть ли не в совершенстве овладела игрой на электрогитаре. К несчастью, исключительные навыки так и не принесли ей ни единого друга. Однако, возможно, её мечта осуществится благодаря встрече с Нидзикой Идзити — девушкой, которая играет на ударных и ищет гитариста для своей группы….",
+    year: Int = 2022,
+    episodes: Int = 12,
+    imageRes: Int = R.drawable.boochi
 ) {
+    val ratings = mapOf(
+        1 to 100, 2 to 50, 3 to 200, 4 to 150, 5 to 300,
+        6 to 400, 7 to 600, 8 to 800, 9 to 700, 10 to 500
+    )
+
+    val recommendations = listOf(
+        AnimeCardData("Ghost in the Shell", listOf("Киберпанк", "Экшен", "Детектив"), 8.3f, R.drawable.ghost_in_the_shell),
+        AnimeCardData("Call of the Night", listOf("Романтика", "Сверхъестественное"), 8.1f, R.drawable.call_of_the_night),
+        AnimeCardData("Nier Automata Ver 1.1", listOf("Фантастика", "Экшен", "Драма"), 8.5f, R.drawable.nier),
+        AnimeCardData("Bocchi the Rock!", listOf("Комедия", "Музыка", "Повседневность"), 8.8f, R.drawable.boochi),
+        AnimeCardData("Miss Kobayashi's Dragon Maid", listOf("Комедия", "Фэнтези", "Сэйнэн"), 8.4f, R.drawable.kobayashi),
+        AnimeCardData("Nichijou: My Ordinary Life", listOf("Комедия", "Повседневность"), 8.6f, R.drawable.nichijou),
+        AnimeCardData("My Dress-Up Darling", listOf("Драма", "Романтика", "Повседневность"), 8.3f, R.drawable.farfor),
+        AnimeCardData("Horimiya", listOf("Романтика", "Комедия", "Школа"), 8.7f, R.drawable.horimiya),
+        AnimeCardData("My Deer Friend Nokotan", listOf("Комедия", "Повседневность"), 8.2f, R.drawable.shikanoko),
+        AnimeCardData("Mushoku Tensei: Jobless Reincarnation", listOf("Исекай", "Комедия", "Драма"), 8.0f, R.drawable.reink)
+    )
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
+        // Основная инф
         Card(
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(8.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant
-            )
+            shape = RoundedCornerShape(8.dp)
         ) {
             Row(
                 modifier = Modifier.padding(12.dp),
@@ -58,55 +74,22 @@ fun AnimeScreen(
                         .clip(RoundedCornerShape(8.dp)),
                     contentScale = ContentScale.Crop
                 )
-
                 Spacer(modifier = Modifier.width(16.dp))
-
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text = title,
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(title, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(8.dp))
-
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = "Рейтинг:",
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = rating.toString(),
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
-
+                    Text("Рейтинг: $rating", style = MaterialTheme.typography.bodyLarge)
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "Год: $year",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-
+                    Text("Год: $year", style = MaterialTheme.typography.bodyLarge)
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "Эпизодов: $episodes",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+                    Text("Эпизодов: $episodes", style = MaterialTheme.typography.bodyLarge)
                 }
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Жанры:",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
-        )
+        Text("Жанры:", style = MaterialTheme.typography.titleMedium)
+
         Spacer(modifier = Modifier.height(8.dp))
 
         val context = LocalContext.current
@@ -125,15 +108,14 @@ fun AnimeScreen(
             update = { customLayout ->
                 customLayout.removeAllViews()
                 genres.forEach { genre ->
-                    val textView = TextView(context).apply {
+                    val textView = android.widget.TextView(context).apply {
                         text = genre
                         setTextAppearance(android.R.style.TextAppearance_Material_Body2)
                         setTextColor(textColor)
-                        setPadding(32, 16, 32, 16)
+                        setPadding(24, 12, 24, 12)
                         background = context.getDrawable(R.drawable.anime_background)?.mutate()?.apply {
                             setTint(surfaceVariantColor)
                         }
-                        setPadding(24, 12, 24, 12)
                     }
                     customLayout.addView(textView)
                 }
@@ -142,33 +124,31 @@ fun AnimeScreen(
         )
 
         Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Описание:",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = description,
-            style = MaterialTheme.typography.bodyLarge
-        )
-    }
-}
+        Text("Описание:", style = MaterialTheme.typography.titleMedium)
+        Text(description, style = MaterialTheme.typography.bodyLarge)
 
-@Composable
-@Preview(showBackground = true)
-fun PreviewAnimeScreen() {
-    MaterialTheme {
-        AnimeScreen(
-            title = "Bocchi the Rock!",
-            genres = listOf("Комедия", "Музыка", "Повседневность", "Сёнэн", "Школа"),
-            rating = 8.8f,
-            description = "Хитори Гото - крайне застенчивая девушка, которая мечтает стать рок-звездой. " +
-                    "Когда её приглашают присоединиться к группе Kessoku Band, она начинает свой путь " +
-                    "к преодолению социальной тревожности и реализации своей мечты.",
-            year = 2022,
-            episodes = 12,
-            imageRes = R.drawable.boochi
-        )
+        // График рейтинга
+        Spacer(modifier = Modifier.height(16.dp))
+        RatingChart(ratings = ratings)
+
+        // Рекомендации
+        Spacer(modifier = Modifier.height(24.dp))
+        Text("Может понравиться", style = MaterialTheme.typography.titleMedium)
+        Spacer(modifier = Modifier.height(8.dp))
+
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp)
+        ) {
+            items(recommendations) { anime ->
+                AnimeCard(
+                    title = anime.title,
+                    genres = anime.genres,
+                    rating = anime.rating,
+                    imageRes = anime.imageRes,
+                    modifier = Modifier.width(160.dp)
+                )
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 package co.feip.fefu2025.anime_ui
 
+import android.view.ViewGroup
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -10,11 +11,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import co.feip.fefu2025.CustomLayout
 import co.feip.fefu2025.R
 
 @Preview
@@ -83,7 +88,41 @@ fun AnimeScreen(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        Text("Жанры: ${genres.joinToString(", ")}", style = MaterialTheme.typography.titleMedium)
+        Text("Жанры:", style = MaterialTheme.typography.titleMedium)
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        val context = LocalContext.current
+        val surfaceVariantColor = MaterialTheme.colorScheme.surfaceVariant.toArgb()
+        val textColor = MaterialTheme.colorScheme.onSurfaceVariant.toArgb()
+
+        AndroidView(
+            factory = { ctx ->
+                CustomLayout(ctx).apply {
+                    layoutParams = ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                    )
+                }
+            },
+            update = { customLayout ->
+                customLayout.removeAllViews()
+                genres.forEach { genre ->
+                    val textView = android.widget.TextView(context).apply {
+                        text = genre
+                        setTextAppearance(android.R.style.TextAppearance_Material_Body2)
+                        setTextColor(textColor)
+                        setPadding(24, 12, 24, 12)
+                        background = context.getDrawable(R.drawable.anime_background)?.mutate()?.apply {
+                            setTint(surfaceVariantColor)
+                        }
+                    }
+                    customLayout.addView(textView)
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        )
+
         Spacer(modifier = Modifier.height(16.dp))
         Text("Описание:", style = MaterialTheme.typography.titleMedium)
         Text(description, style = MaterialTheme.typography.bodyLarge)

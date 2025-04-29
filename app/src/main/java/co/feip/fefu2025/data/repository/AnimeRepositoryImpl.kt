@@ -4,6 +4,7 @@ import co.feip.fefu2025.R
 import co.feip.fefu2025.domain.model.Anime
 import co.feip.fefu2025.domain.model.AnimeDetails
 import co.feip.fefu2025.domain.repository.AnimeRepository
+import kotlinx.coroutines.delay
 
 class AnimeRepositoryImpl: AnimeRepository {
     private val animeList = listOf(
@@ -112,17 +113,38 @@ class AnimeRepositoryImpl: AnimeRepository {
             description = "История безработного, который после смерти перерождается в мире фэнтези с сохранением воспоминаний."
         )
     )
+    private var getAnimeListCallCount = 0
+    private var getAnimeByIdCallCount = 0
 
-    override fun getAnimeList(): List<Anime> = animeList
+    override suspend fun getAnimeList(): List<Anime> {
+        delay(1000)
+        getAnimeListCallCount++
+        if (getAnimeListCallCount % 3 == 0) {
+            throw Exception("Ошибка загрузки списка аниме")
+        }
+        return animeList
+    }
 
-    fun getSimilarAnimeByGenres(genres: List<String>): List<Anime> {
+
+
+    override fun getSimilarAnimeByGenres(genres: List<String>): List<Anime> {
         return animeList.filter { anime ->
             anime.genres.any { it in genres }
         }
     }
 
-    override fun getAnimeById(id: Int): AnimeDetails? {
-        val anime = animeList.find { it.id == id } ?: return null
+    override suspend fun getAnimeById(id: Int): AnimeDetails {
+        delay(1000)
+        getAnimeByIdCallCount++
+        if (getAnimeByIdCallCount % 3 == 0) {
+            throw Exception("Ошибка загрузки информации об аниме")
+        }
+
+        val anime = animeList.find { it.id == id }
+            ?: throw Exception("Аниме не найдено")
+
+        val similarAnime = getSimilarAnimeByGenres(anime.genres, animeList)
+
         return AnimeDetails(
             id = anime.id,
             title = anime.title,
@@ -132,8 +154,23 @@ class AnimeRepositoryImpl: AnimeRepository {
             year = anime.year,
             episodes = anime.episodes,
             description = anime.description,
-            similar = animeList.filter { it.id != id }
+            similar = similarAnime
         )
     }
 
 }
+
+private var getSimilarCallCount = 0
+
+suspend fun getSimilarAnimeByGenres(genres: List<String>, animeList: List<Anime>): List<Anime> {
+    delay(1000)
+    getSimilarCallCount++
+    if (getSimilarCallCount % 3 == 0) {
+        throw Exception("Ошибка загрузки похожего аниме")
+    }
+    return animeList.filter { anime ->
+        anime.genres.any { it in genres }
+    }
+}
+
+

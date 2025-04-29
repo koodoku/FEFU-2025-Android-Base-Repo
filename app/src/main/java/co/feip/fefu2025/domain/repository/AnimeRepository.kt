@@ -4,6 +4,7 @@ import co.feip.fefu2025.domain.model.Anime
 import co.feip.fefu2025.domain.model.AnimeDetails
 
 interface AnimeRepository {
-    fun getAnimeList(): List<Anime>
-    fun getAnimeById(id: Int): AnimeDetails?
+    suspend fun getAnimeList(): List<Anime>
+    suspend fun getAnimeById(id: Int): AnimeDetails?
+    fun getSimilarAnimeByGenres(strings: List<String>): List<Anime>
 }

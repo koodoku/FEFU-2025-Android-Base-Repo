@@ -9,10 +9,15 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import co.feip.fefu2025.presentation.screen.details.AnimeDetailsScreen
 import co.feip.fefu2025.presentation.screen.main_screen.MainScreen
+import co.feip.fefu2025.presentation.screen.main_screen.SearchScreen
+import co.feip.fefu2025.presentation.screen.main_screen.SearchViewModel
 import co.feip.fefu2025.presentation.screen.recommendations.RecommendationsScreen
 
 @Composable
-fun AppNavigation(navController: NavHostController) {
+fun AppNavigation(
+    navController: NavHostController,
+    searchViewModelFactory: SearchViewModel.Factory
+) {
 
     NavHost(
         navController = navController,
@@ -20,6 +25,14 @@ fun AppNavigation(navController: NavHostController) {
     ) {
         composable(Screen.Main.route) {
             MainScreen(navController = navController)
+        }
+
+        composable("search") {
+            SearchScreen(
+                viewModelFactory = searchViewModelFactory,
+                onBackClick = { navController.popBackStack() },
+                onAnimeClick = { id -> navController.navigate("details/$id") }
+            )
         }
 
         composable(
@@ -62,7 +75,6 @@ sealed class Screen(val route: String) {
     object Recommendations : Screen("recommendations")
 
     companion object {
-        // Функции для удобного создания маршрутов
         fun detailsRoute(animeId: Int) = "${Details.route}/$animeId"
         fun recommendationsRoute(animeId: Int) = "${Recommendations.route}/$animeId"
     }

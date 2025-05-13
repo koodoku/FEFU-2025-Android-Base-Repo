@@ -1,7 +1,5 @@
-package co.feip.fefu2025.data.remoute.dto.top_anime
-import kotlinx.serialization.Serializable
+package co.feip.fefu2025.data.remoute.dto.anime_details
 
-@Serializable
 data class Data(
     val aired: Aired,
     val airing: Boolean,
@@ -23,7 +21,7 @@ data class Data(
     val rank: Int,
     val rating: String,
     val score: Double,
-    val scored_by: Int,
+    val scored_by: Double,
     val season: String,
     val source: String,
     val status: String,

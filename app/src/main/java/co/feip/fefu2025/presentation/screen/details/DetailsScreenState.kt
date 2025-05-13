@@ -6,5 +6,5 @@ import co.feip.fefu2025.domain.model.AnimeDetails
 data class DetailsScreenState(
     val isLoading: Boolean = false,
     val animeDetails: AnimeDetails? = null,
-    val searchQuery: String= ""
+    val error: String? = null,
 )

@@ -22,6 +22,6 @@ fun TopAnimeDto.mapTopAnimeToDomain(): List<Anime> {
     return result
 }
 
-private fun transformDoubleToFloat(value: Double): Float{
+fun transformDoubleToFloat(value: Double): Float{
     return (value.toFloat() * 10).roundToInt() / 10f
 }

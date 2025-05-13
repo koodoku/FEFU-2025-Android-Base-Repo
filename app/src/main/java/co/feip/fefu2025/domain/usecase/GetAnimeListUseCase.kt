@@ -13,7 +13,5 @@ class GetAnimeListUseCase(
         } catch (e: Exception) {
             Result.failure(e)
         }
-
     }
-    suspend operator fun invoke(genres: List<String>): List<Anime> = repository.getSimilarAnimeByGenres(genres)
 }

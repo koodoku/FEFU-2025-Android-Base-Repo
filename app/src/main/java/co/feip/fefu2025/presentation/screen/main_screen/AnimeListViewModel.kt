@@ -1,5 +1,6 @@
 package co.feip.fefu2025.presentation.screen.main_screen
 
+import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,13 +31,13 @@ class AnimeListViewModel() : ViewModel() {
                     animeList = anime.getOrNull() ?: emptyList()
                 )
             } else {
+                Log.e("AnimeListViewModel", "${anime.exceptionOrNull()?.message}")
                 animeListState.copy(
                     isLoading = false,
                     error = anime.exceptionOrNull()?.message
                 )
             }
         }
-
     }
 }
 

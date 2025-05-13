@@ -29,7 +29,7 @@ fun AnimeCard(
     title: String,
     genres: List<String>,
     rating: Float,
-    imageUrl: Int,
+    imageUrl: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -97,15 +97,15 @@ fun AnimeCard(
     }
 }
 
-@Composable
-@Preview
-fun PreviewAnimeCard() {
-    AnimeCard(
-        title = "Bocchi the Rock!",
-        genres = listOf("Комедия", "Музыка", "Повседневность"),
-        rating = 8.8f,
-        imageUrl = R.drawable.boochi,
-        modifier = Modifier.width(150.dp),
-        onClick = {},
-    )
-}
+//@Composable
+//@Preview
+//fun PreviewAnimeCard() {
+//    AnimeCard(
+//        title = "Bocchi the Rock!",
+//        genres = listOf("Комедия", "Музыка", "Повседневность"),
+//        rating = 8.8f,
+//        imageUrl = R.drawable.boochi,
+//        modifier = Modifier.width(150.dp),
+//        onClick = {},
+//    )
+//}

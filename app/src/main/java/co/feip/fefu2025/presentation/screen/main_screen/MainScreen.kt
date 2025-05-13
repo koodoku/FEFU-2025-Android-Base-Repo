@@ -20,10 +20,11 @@ import co.feip.fefu2025.presentation.screen.details.components.AnimeCard
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    viewModel: AnimeListViewModel = viewModel(),
-    navController: NavController? = null
+    state: MainScreenState,
+    navigateToDetails: (Int) -> Unit,
+    navigateToSearch: () -> Unit,
+    loadAnimeList: () -> Unit,
 ) {
-    val state = viewModel.animeListState
 
 
     if (state.isLoading) {
@@ -43,7 +44,7 @@ fun MainScreen(
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(text = "Ошибка: ${state.error}")
                 Spacer(modifier = Modifier.height(8.dp))
-                Button(onClick = { viewModel.loadAnimeList() }) {
+                Button(onClick = { loadAnimeList() }) {
                     Text("Повторить")
                 }
             }
@@ -60,7 +61,7 @@ fun MainScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp)
-                    .clickable { navController?.navigate("search") },
+                    .clickable { navigateToSearch() },
                 placeholder = { Text("Поиск аниме") },
                 leadingIcon = {
                     Icon(Icons.Default.Search, contentDescription = "Поиск")
@@ -82,9 +83,7 @@ fun MainScreen(
                         rating = anime.rating ?: 0f,
                         imageUrl = anime.image,
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = {
-                            navController?.navigate("details/${anime.id}")
-                        }
+                        onClick = { navigateToDetails(anime.id) }
                     )
                 }
             }
@@ -92,13 +91,13 @@ fun MainScreen(
     }
 }
 
-@Preview
-@Composable
-fun MainScreenPreview() {
-    MaterialTheme {
-        MainScreen(
-            viewModel = AnimeListViewModel(),
-            navController = null
-        )
-    }
-}
+//@Preview
+//@Composable
+//fun MainScreenPreview() {
+//    MaterialTheme {
+//        MainScreen(
+//            viewModel = AnimeListViewModel(),
+//            navController = null
+//        )
+//    }
+//}

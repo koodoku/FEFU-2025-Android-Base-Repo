@@ -3,7 +3,6 @@ package co.feip.fefu2025.presentation.screen.main_screen
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
@@ -13,10 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import co.feip.fefu2025.presentation.screen.details.components.AnimeCard
 import co.feip.fefu2025.presentation.util.AnimeUiState
-import kotlinx.coroutines.flow.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -105,7 +102,7 @@ fun SearchScreen(
                                 title = anime.title,
                                 genres = anime.genres,
                                 rating = anime.rating ?: 0f,
-                                imageRes = anime.imageRes,
+                                imageUrl = anime.image,
                                 modifier = Modifier.fillMaxWidth(),
                                 onClick = {
                                     onAnimeClick(anime.id)

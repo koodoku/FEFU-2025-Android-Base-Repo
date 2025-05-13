@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
@@ -102,7 +101,7 @@ fun RecommendationsScreen(
                                 title = anime.title,
                                 genres = anime.genres,
                                 rating = rating,
-                                imageRes = anime.imageRes,
+                                imageUrl = anime.image,
                                 modifier = Modifier.fillMaxWidth(),
                                 onClick = {
                                     navController.navigate("details/${anime.id}")

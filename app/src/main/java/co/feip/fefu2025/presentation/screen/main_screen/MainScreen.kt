@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import co.feip.fefu2025.presentation.screen.details.components.AnimeCard
-import co.feip.fefu2025.presentation.util.UiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,68 +25,67 @@ fun MainScreen(
 ) {
     val state = viewModel.animeListState
 
-    when (state) {
-        is UiState.Loading -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        }
 
-        is UiState.Error -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = state.message)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(onClick = { viewModel.loadAnimeList() }) {
-                        Text("Повторить")
-                    }
+    if (state.isLoading) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+    }
+
+    else if (state.error != null ) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(text = "Ошибка: ${state.error}")
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(onClick = { viewModel.loadAnimeList() }) {
+                    Text("Повторить")
                 }
             }
         }
+    }
 
-        is UiState.Success -> {
-            val animeList = state.data
+    else {
+        val animeList = state.animeList
 
-            Column(modifier = Modifier.fillMaxSize()) {
-                OutlinedTextField(
-                    value = "",
-                    onValueChange = { },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                        .clickable { navController?.navigate("search") },
-                    placeholder = { Text("Поиск аниме") },
-                    leadingIcon = {
-                        Icon(Icons.Default.Search, contentDescription = "Поиск")
-                    },
-                    enabled = false
-                )
+        Column(modifier = Modifier.fillMaxSize()) {
+            OutlinedTextField(
+                value = "",
+                onValueChange = { },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .clickable { navController?.navigate("search") },
+                placeholder = { Text("Поиск аниме") },
+                leadingIcon = {
+                    Icon(Icons.Default.Search, contentDescription = "Поиск")
+                },
+                enabled = false
+            )
 
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    modifier = Modifier.weight(1f),
-                    contentPadding = PaddingValues(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(animeList) { anime ->
-                        AnimeCard(
-                            title = anime.title,
-                            genres = anime.genres,
-                            rating = anime.rating ?: 0f,
-                            imageRes = anime.imageRes,
-                            modifier = Modifier.fillMaxWidth(),
-                            onClick = {
-                                navController?.navigate("details/${anime.id}")
-                            }
-                        )
-                    }
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier.weight(1f),
+                contentPadding = PaddingValues(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(animeList) { anime ->
+                    AnimeCard(
+                        title = anime.title,
+                        genres = anime.genres,
+                        rating = anime.rating ?: 0f,
+                        imageUrl = anime.image,
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = {
+                            navController?.navigate("details/${anime.id}")
+                        }
+                    )
                 }
             }
         }

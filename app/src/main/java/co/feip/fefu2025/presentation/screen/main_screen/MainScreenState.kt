@@ -5,5 +5,6 @@ import co.feip.fefu2025.domain.model.Anime
 data class MainScreenState(
     val isLoading: Boolean = false,
     val animeList: List<Anime> = emptyList(),
-    val searchQuery: String= ""
+    val searchQuery: String= "",
+    val error: String? = null
 )

@@ -5,7 +5,7 @@ data class Anime(
     val title: String,
     val genres: List<String>,
     val rating: Float?,
-    val imageRes: Int,
+    val image: String,
     val year: Int,
     val episodes: Int,
     val description: String,

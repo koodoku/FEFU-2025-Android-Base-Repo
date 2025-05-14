@@ -28,7 +28,7 @@ import coil3.compose.AsyncImage
 fun AnimeCard(
     title: String,
     genres: List<String>,
-    rating: Float,
+    rating: Float?,
     imageUrl: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -79,19 +79,21 @@ fun AnimeCard(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(horizontal = 8.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.Star,
-                    contentDescription = "Рейтинг",
-                    tint = Color(0xFFFFA500),
-                    modifier = Modifier.size(16.dp)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = "$rating",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.primary
-                )
+                rating?.let{
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = "Рейтинг",
+                        tint = Color(0xFFFFA500),
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "$rating",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
         }
     }

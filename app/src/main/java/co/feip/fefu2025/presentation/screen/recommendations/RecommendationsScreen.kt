@@ -1,5 +1,6 @@
 package co.feip.fefu2025.presentation.screen.recommendations
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
@@ -33,80 +35,54 @@ import co.feip.fefu2025.presentation.util.UiState
 fun RecommendationsScreen(
     animeId: Int,
     navController: NavController,
-    viewModel: AnimeDetailsViewModel = viewModel()
+    viewModel: AnimeDetailsViewModel
 ) {
     val state = viewModel.animeDetailsState
 
-//    Scaffold(
-//        topBar = {
-//            TopAppBar(
-//                title = { Text("Может понравиться") },
-//                navigationIcon = {
-//                    IconButton(onClick = { navController.popBackStack() }) {
-//                        Icon(
-//                            imageVector = Icons.Default.ArrowBack,
-//                            contentDescription = "Назад"
-//                        )
-//                    }
-//                }
-//            )
-//        }
-//    ) { padding ->
-//        when (state) {
-//            is UiState.Loading -> {
-//                androidx.compose.foundation.layout.Box(
-//                    modifier = Modifier
-//                        .fillMaxSize()
-//                        .padding(padding),
-//                    contentAlignment = Alignment.Center
-//                ) {
-//                    CircularProgressIndicator()
-//                }
-//            }
-//
-//            is UiState.Error -> {
-//                androidx.compose.foundation.layout.Box(
-//                    modifier = Modifier
-//                        .fillMaxSize()
-//                        .padding(padding),
-//                    contentAlignment = Alignment.Center
-//                ) {
-//                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-//                        Text(state.message)
-//                        androidx.compose.material3.Button(onClick = { viewModel.retry() }) {
-//                            Text("Повторить")
-//                        }
-//                    }
-//                }
-//            }
-//
-//            is UiState.Success -> {
-//                val recommendations = state.data?.similar.orEmpty()
-////                LazyVerticalGrid(
-////                    columns = GridCells.Fixed(2),
-////                    modifier = Modifier
-////                        .fillMaxSize()
-////                        .padding(padding),
-////                    contentPadding = PaddingValues(8.dp),
-////                    verticalArrangement = Arrangement.spacedBy(8.dp),
-////                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-////                ) {
-////                    items(recommendations) { anime ->
-////                        anime.rating?.let { rating ->
-////                            AnimeCard(
-////                                title = anime.title,
-////                                genres = anime.genres,
-////                                rating = rating,
-////                                imageUrl = anime.image,
-////                                modifier = Modifier.fillMaxWidth(),
-////                                onClick = {
-////                                    navController.navigate("details/${anime.id}")
-////                                }
-////                            )
-////                        }
-////                    }
-////                }
-//            }
-//        }
-//    }
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Может понравиться") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Назад"
+                        )
+                    }
+                }
+            )
+        }
+    ) { padding ->
+        Log.e("RecommendationsScreen", state.animeDetails?.similar.toString())
+        if (!state.animeDetails?.similar.isNullOrEmpty()) {
+            val recommendations = state.animeDetails?.similar!!
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding),
+                contentPadding = PaddingValues(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(recommendations) { anime ->
+                        AnimeCard(
+                            title = anime.title,
+                            genres = anime.genres,
+                            rating = anime.rating,
+                            imageUrl = anime.image,
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = {
+                                navController.navigate("details/${anime.id}")
+                            }
+                        )
+                }
+            }
+        } else {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("Ошибка зашрузки рекомендаций")
+            }
+        }
+    }
 }

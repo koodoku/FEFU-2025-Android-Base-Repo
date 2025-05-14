@@ -4,7 +4,7 @@ data class AnimeDetails (
     val title: String,
     val genres: List<String>?,
     val rating: Float?,
-    val imageRes: Int?,
+    val imageRes: String,
     val year: Int?,
     val episodes: Int?,
     val description: String?,

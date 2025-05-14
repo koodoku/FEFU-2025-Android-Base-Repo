@@ -1,6 +1,5 @@
 package co.feip.fefu2025.presentation.screen.details.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -16,21 +15,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.feip.fefu2025.R
+import coil3.compose.AsyncImage
 
 
 @Composable
 fun AnimeCard(
     title: String,
     genres: List<String>,
-    rating: Float,
-    imageRes: Int,
+    rating: Float?,
+    imageUrl: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -43,14 +42,14 @@ fun AnimeCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
-            Image(
-                painter = painterResource(id = imageRes),
-                contentDescription = title,
+            AsyncImage(
+                model = imageUrl,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(180.dp)
                     .clip(RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
+                contentDescription = null
             )
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -80,33 +79,35 @@ fun AnimeCard(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(horizontal = 8.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Default.Star,
-                    contentDescription = "Рейтинг",
-                    tint = Color(0xFFFFA500),
-                    modifier = Modifier.size(16.dp)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = "$rating",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.primary
-                )
+                rating?.let{
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = "Рейтинг",
+                        tint = Color(0xFFFFA500),
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "$rating",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
         }
     }
 }
 
-@Composable
-@Preview
-fun PreviewAnimeCard() {
-    AnimeCard(
-        title = "Bocchi the Rock!",
-        genres = listOf("Комедия", "Музыка", "Повседневность"),
-        rating = 8.8f,
-        imageRes = R.drawable.boochi,
-        modifier = Modifier.width(150.dp),
-        onClick = {},
-    )
-}
+//@Composable
+//@Preview
+//fun PreviewAnimeCard() {
+//    AnimeCard(
+//        title = "Bocchi the Rock!",
+//        genres = listOf("Комедия", "Музыка", "Повседневность"),
+//        rating = 8.8f,
+//        imageUrl = R.drawable.boochi,
+//        modifier = Modifier.width(150.dp),
+//        onClick = {},
+//    )
+//}

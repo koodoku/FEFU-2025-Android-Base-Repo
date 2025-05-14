@@ -1,10 +1,12 @@
 package co.feip.fefu2025.presentation.screen.details
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import co.feip.fefu2025.data.repository.AnimeRepositoryImpl
 import co.feip.fefu2025.domain.model.Anime
@@ -13,36 +15,43 @@ import co.feip.fefu2025.domain.usecase.GetAnimeDetailsUseCase
 import co.feip.fefu2025.presentation.util.UiState
 import kotlinx.coroutines.launch
 
-class AnimeDetailsViewModel : ViewModel() {
+class AnimeDetailsViewModel(val animeId: Int, val animeDetailsUseCase: GetAnimeDetailsUseCase) : ViewModel() {
+    private val getAnimeDetailsUseCase = animeDetailsUseCase
 
-    private val repository = AnimeRepositoryImpl()
-    private val getAnimeDetailsUseCase = GetAnimeDetailsUseCase(repository)
-
-
-    var animeDetailsState by mutableStateOf<UiState<AnimeDetails>>(UiState.Loading)
+    var animeDetailsState by mutableStateOf(DetailsScreenState())
         private set
-
-    private var lastLoadedAnimeId: Int? = null
-
-    fun loadAnimeDetails(animeId: Int) {
-        lastLoadedAnimeId = animeId
-        animeDetailsState = UiState.Loading
+    init {
+        loadAnimeDetails()
+    }
+    fun loadAnimeDetails() {
+        animeDetailsState = animeDetailsState.copy(isLoading = true)
         viewModelScope.launch {
-            try {
-                val animeDetails = getAnimeDetailsUseCase(animeId)
-                val genres = animeDetails?.genres ?: emptyList()
-                val recommendations = repository.getSimilarAnimeByGenres(genres)
-                    .filter { it.id != animeId }
-
-                val fullAnime = animeDetails?.copy(similar = recommendations)
-                animeDetailsState = UiState.Success(fullAnime) as UiState<AnimeDetails>
-            } catch (e: Exception) {
-                animeDetailsState = UiState.Error("Ошибка загрузки аниме")
+             val details = getAnimeDetailsUseCase(animeId)
+            details.onSuccess { animeDetails ->
+                animeDetailsState = animeDetailsState.copy(
+                    isLoading = false,
+                    animeDetails = animeDetails
+                )
+            }.onFailure { error ->
+                Log.e("AnimeDetailsViewModel", error.message.toString())
+                animeDetailsState = animeDetailsState.copy(
+                    isLoading = false,
+                    error = error.message
+                )
             }
         }
     }
+}
+class AnimeDetailsViewModelFactory(
+    private val animeId: Int,
+    private val getAnimeDetailsUseCase: GetAnimeDetailsUseCase
+) : ViewModelProvider.Factory {
 
-    fun retry() {
-        lastLoadedAnimeId?.let { loadAnimeDetails(it) }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(AnimeDetailsViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return AnimeDetailsViewModel(animeId, getAnimeDetailsUseCase) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

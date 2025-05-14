@@ -27,6 +27,7 @@ class SearchViewModel(
                 }
         }
     }
+
     fun retrySearch() {
         viewModelScope.launch {
             performSearch(queryFlow.value)
@@ -45,27 +46,27 @@ class SearchViewModel(
         }
 
         _uiState.value = AnimeUiState.Loading
-        try {
-            val normalizedQuery = query.trim().lowercase().split("\\s+".toRegex())
+        val normalizedQuery = query.trim().lowercase().split("\\s+".toRegex())
 
-            val fullList = getAnimeListUseCase()
-            val filtered = fullList.filter { anime ->
-                val normalizedTitle = anime.title.trim().lowercase()
-                normalizedQuery.all { token ->
-                    normalizedTitle.contains(token)
+        val fullList = getAnimeListUseCase()
+        if (fullList.isSuccess) {
+            val animeList = fullList.getOrNull() ?: emptyList()
+            val filteredList = animeList.filter { anime ->
+                normalizedQuery.all { query ->
+                    anime.title.lowercase().contains(query)
                 }
             }
-
-            _uiState.value = AnimeUiState.Success(filtered)
-        } catch (e: Exception) {
-            _uiState.value = AnimeUiState.Error("Не удалось загрузить данные")
+            _uiState.value = AnimeUiState.Success(filteredList)
+        } else {
+            _uiState.value =
+                AnimeUiState.Error(fullList.exceptionOrNull()?.message ?: "Unknown error")
         }
     }
+}
 
 
-    class Factory(private val useCase: GetAnimeListUseCase) : ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return SearchViewModel(useCase) as T
-        }
+class Factory(private val useCase: GetAnimeListUseCase) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return SearchViewModel(useCase) as T
     }
 }

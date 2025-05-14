@@ -1,6 +1,8 @@
 package co.feip.fefu2025.presentation.navigation
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -21,6 +23,7 @@ import co.feip.fefu2025.presentation.screen.details.search.SearchScreenViewModel
 import co.feip.fefu2025.presentation.screen.main_screen.SearchViewModel
 import co.feip.fefu2025.presentation.screen.recommendations.RecommendationsScreen
 
+@SuppressLint("UnrememberedGetBackStackEntry")
 @Composable
 fun AppNavigation(
     navController: NavHostController,
@@ -88,9 +91,12 @@ fun AppNavigation(
             )
         ) { backStackEntry ->
             val animeId = backStackEntry.arguments?.getInt("animeId") ?: 0
+            val parentEntry = remember { navController.getBackStackEntry("${Screen.Details.route}/$animeId") }
+            val sharedViewModel = ViewModelProvider(parentEntry)[AnimeDetailsViewModel::class.java]
             RecommendationsScreen(
                 animeId = animeId,
-                navController = navController
+                navController = navController,
+                viewModel = sharedViewModel,
             )
         }
     }

@@ -1,5 +1,6 @@
 package co.feip.fefu2025.presentation.screen.details
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -159,24 +160,23 @@ fun AnimeDetailsScreen(
                         .padding(vertical = 8.dp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
+                Log.e("SIMILAR", details?.similar.toString())
                 details?.similar?.let { animeList ->
                     LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp)
                     ) {
                         items(animeList) { recommendedAnime ->
-                            recommendedAnime.rating?.let {
                                 AnimeCard(
                                     title = recommendedAnime.title,
                                     genres = recommendedAnime.genres,
-                                    rating = it,
+                                    rating = recommendedAnime.rating,
                                     imageUrl = recommendedAnime.image,
                                     modifier = Modifier.width(160.dp),
                                     onClick = {
                                         navController?.navigate("details/${recommendedAnime.id}")
                                     }
                                 )
-                            }
                         }
                     }
                 }

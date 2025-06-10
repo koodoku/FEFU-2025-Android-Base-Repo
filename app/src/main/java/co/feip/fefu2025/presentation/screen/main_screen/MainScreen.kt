@@ -64,7 +64,11 @@ fun MainScreen(
                     ) {
                         items(state.animeList) { anime ->
                             AnimeCard(
-                                anime = anime,
+                                title = anime.title,
+                                genres = anime.genres,
+                                rating = anime.rating,
+                                imageUrl = anime.image,
+                                modifier = Modifier.fillMaxWidth(),
                                 onClick = { navigateToDetails(anime.id) }
                             )
                         }

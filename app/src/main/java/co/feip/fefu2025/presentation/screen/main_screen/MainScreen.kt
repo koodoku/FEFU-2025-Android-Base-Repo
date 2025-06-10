@@ -44,18 +44,15 @@ fun MainScreen(
         ) {
             when {
                 state.isLoading && state.animeList.isEmpty() -> {
-                    // Показываем скелетон загрузки только при первой загрузке
                     LoadingSkeleton()
                 }
                 state.error != null && state.animeList.isEmpty() -> {
-                    // Показываем ошибку только если нет данных
                     ErrorContent(
                         error = state.error,
                         onRetry = loadAnimeList
                     )
                 }
                 else -> {
-                    // Показываем список аниме
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
                         contentPadding = PaddingValues(16.dp),
@@ -72,9 +69,15 @@ fun MainScreen(
                                 onClick = { navigateToDetails(anime.id) }
                             )
                         }
+
+                        if (state.hasNextPage && !state.isLoading) {
+                            item {
+                                LaunchedEffect(Unit) {
+                                    loadAnimeList()
+                                }
+                            }
+                        }
                     }
-                    
-                    // Показываем индикатор загрузки поверх списка при обновлении
                     if (state.isLoading && state.animeList.isNotEmpty()) {
                         Box(
                             modifier = Modifier.fillMaxSize(),
@@ -138,13 +141,4 @@ private fun ErrorContent(
     }
 }
 
-//@Preview
-//@Composable
-//fun MainScreenPreview() {
-//    MaterialTheme {
-//        MainScreen(
-//            viewModel = AnimeListViewModel(),
-//            navController = null
-//        )
-//    }
-//}
+

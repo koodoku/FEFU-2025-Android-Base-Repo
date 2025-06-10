@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import co.feip.fefu2025.data.repository.AnimeRepositoryImpl
 import co.feip.fefu2025.domain.usecase.GetAnimeListUseCase
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeout
 
 class AnimeListViewModel() : ViewModel() {
     private val repository = AnimeRepositoryImpl()
@@ -19,50 +18,31 @@ class AnimeListViewModel() : ViewModel() {
     var searchQuery by mutableStateOf("")
 
     init {
-        loadInitialData()
-    }
-
-    private fun loadInitialData() {
-        viewModelScope.launch {
-            try {
-                // Устанавливаем таймаут в 5 секунд для начальной загрузки
-                withTimeout(5000) {
-                    val anime = getAnimeListUseCase()
-                    if (anime.isSuccess) {
-                        animeListState = animeListState.copy(
-                            isLoading = false,
-                            animeList = anime.getOrNull()?.take(10) ?: emptyList() // Загружаем только первые 10 элементов
-                        )
-                    } else {
-                        animeListState = animeListState.copy(
-                            isLoading = false,
-                            error = anime.exceptionOrNull()?.message
-                        )
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e("AnimeListViewModel", "Error loading initial data", e)
-                animeListState = animeListState.copy(
-                    isLoading = false,
-                    error = "Ошибка загрузки данных"
-                )
-            }
-        }
+        loadAnimeList()
     }
 
     fun loadAnimeList() {
+        if (animeListState.isLoading) return
+        
         animeListState = animeListState.copy(isLoading = true)
         viewModelScope.launch {
             try {
                 val anime = getAnimeListUseCase()
-                animeListState = if (anime.isSuccess) {
-                    animeListState.copy(
+                if (anime.isSuccess) {
+                    val newList = anime.getOrNull() ?: emptyList()
+                    animeListState = animeListState.copy(
                         isLoading = false,
-                        animeList = anime.getOrNull() ?: emptyList()
+                        animeList = if (animeListState.currentPage == 1) {
+                            newList
+                        } else {
+                            animeListState.animeList + newList
+                        },
+                        hasNextPage = newList.isNotEmpty(),
+                        currentPage = animeListState.currentPage + 1
                     )
                 } else {
                     Log.e("AnimeListViewModel", "${anime.exceptionOrNull()?.message}")
-                    animeListState.copy(
+                    animeListState = animeListState.copy(
                         isLoading = false,
                         error = anime.exceptionOrNull()?.message
                     )

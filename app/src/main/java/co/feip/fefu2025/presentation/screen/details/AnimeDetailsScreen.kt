@@ -166,7 +166,7 @@ fun AnimeDetailsScreen(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp)
                     ) {
-                        items(animeList) { recommendedAnime ->
+                        items(animeList.take(10)) { recommendedAnime ->
                                 AnimeCard(
                                     title = recommendedAnime.title,
                                     genres = recommendedAnime.genres,

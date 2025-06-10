@@ -25,68 +25,111 @@ fun MainScreen(
     navigateToSearch: () -> Unit,
     loadAnimeList: () -> Unit,
 ) {
-
-
-    if (state.isLoading) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
-        }
-    }
-
-    else if (state.error != null ) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = "Ошибка: ${state.error}")
-                Spacer(modifier = Modifier.height(8.dp))
-                Button(onClick = { loadAnimeList() }) {
-                    Text("Повторить")
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Аниме") },
+                actions = {
+                    IconButton(onClick = navigateToSearch) {
+                        Icon(Icons.Default.Search, contentDescription = "Поиск")
+                    }
                 }
-            }
-        }
-    }
-
-    else {
-        val animeList = state.animeList
-
-        Column(modifier = Modifier.fillMaxSize()) {
-            OutlinedTextField(
-                value = "",
-                onValueChange = { },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-                    .clickable { navigateToSearch() },
-                placeholder = { Text("Поиск аниме") },
-                leadingIcon = {
-                    Icon(Icons.Default.Search, contentDescription = "Поиск")
-                },
-                enabled = false
             )
-
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = Modifier.weight(1f),
-                contentPadding = PaddingValues(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(animeList) { anime ->
-                    AnimeCard(
-                        title = anime.title,
-                        genres = anime.genres,
-                        rating = anime.rating ?: 0f,
-                        imageUrl = anime.image,
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = { navigateToDetails(anime.id) }
+        }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            when {
+                state.isLoading && state.animeList.isEmpty() -> {
+                    // Показываем скелетон загрузки только при первой загрузке
+                    LoadingSkeleton()
+                }
+                state.error != null && state.animeList.isEmpty() -> {
+                    // Показываем ошибку только если нет данных
+                    ErrorContent(
+                        error = state.error,
+                        onRetry = loadAnimeList
                     )
                 }
+                else -> {
+                    // Показываем список аниме
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        contentPadding = PaddingValues(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        items(state.animeList) { anime ->
+                            AnimeCard(
+                                anime = anime,
+                                onClick = { navigateToDetails(anime.id) }
+                            )
+                        }
+                    }
+                    
+                    // Показываем индикатор загрузки поверх списка при обновлении
+                    if (state.isLoading && state.animeList.isNotEmpty()) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                }
             }
+        }
+    }
+}
+
+@Composable
+private fun LoadingSkeleton() {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        contentPadding = PaddingValues(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(6) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(0.7f)
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ErrorContent(
+    error: String,
+    onRetry: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = error,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.error
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = onRetry) {
+            Text("Повторить")
         }
     }
 }

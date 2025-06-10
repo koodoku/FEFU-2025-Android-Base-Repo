@@ -22,19 +22,35 @@ class AnimeListViewModel() : ViewModel() {
     }
 
     fun loadAnimeList() {
+        if (animeListState.isLoading) return
+        
         animeListState = animeListState.copy(isLoading = true)
         viewModelScope.launch {
-            val anime = getAnimeListUseCase()
-            animeListState = if (anime.isSuccess) {
-                animeListState.copy(
+            try {
+                val anime = getAnimeListUseCase()
+                if (anime.isSuccess) {
+                    val newList = anime.getOrNull() ?: emptyList()
+                    animeListState = animeListState.copy(
+                        isLoading = false,
+                        animeList = if (animeListState.currentPage == 1) {
+                            newList
+                        } else {
+                            animeListState.animeList + newList
+                        },
+                        hasNextPage = newList.isNotEmpty(),
+                        currentPage = animeListState.currentPage + 1
+                    )
+                } else {
+                    Log.e("AnimeListViewModel", "${anime.exceptionOrNull()?.message}")
+                    animeListState = animeListState.copy(
+                        isLoading = false,
+                        error = anime.exceptionOrNull()?.message
+                    )
+                }
+            } catch (e: Exception) {
+                animeListState = animeListState.copy(
                     isLoading = false,
-                    animeList = anime.getOrNull() ?: emptyList()
-                )
-            } else {
-                Log.e("AnimeListViewModel", "${anime.exceptionOrNull()?.message}")
-                animeListState.copy(
-                    isLoading = false,
-                    error = anime.exceptionOrNull()?.message
+                    error = "Ошибка загрузки данных"
                 )
             }
         }

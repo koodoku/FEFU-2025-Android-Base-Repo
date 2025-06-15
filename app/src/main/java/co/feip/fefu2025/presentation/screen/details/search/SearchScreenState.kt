@@ -7,4 +7,7 @@ data class SearchScreenState(
     val isLoading: Boolean = false,
     val animeList: List<Anime> = emptyList(),
     val error: String? = null,
+    val currentPage: Int = 1,
+    val hasNextPage: Boolean = true,
+    val isInitialLoading: Boolean = false
 )

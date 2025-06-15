@@ -17,21 +17,19 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.FEFU2025AndroidBaseRepo">
+            android:theme="@style/Theme.FEFU2025AndroidBaseRepo"
+            android:launchMode="singleTask">
 
-            <!-- Основной intent-filter для запуска приложения -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <!-- Intent-filter для обработки deep links -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <!-- Обрабатываем ссылки вида mysuperapp://anime/{id} -->
                 <data
                     android:scheme="mysuperapp"
                     android:host="anime"

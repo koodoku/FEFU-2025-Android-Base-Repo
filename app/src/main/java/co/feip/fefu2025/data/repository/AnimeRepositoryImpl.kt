@@ -23,8 +23,8 @@ class AnimeRepositoryImpl: AnimeRepository {
         return api.searchAnime(query).mapTopAnimeToDomain()
     }
 
-    override suspend fun getRecommendationsAnime(): List<Anime> {
-        return api.getRecommendationsAnime().mapRecommendationsToDomain()
+    override suspend fun getAnimeRecommendations(animeId: Int, page: Int): List<Anime> {
+        return api.getAnimeRecommendations(animeId, page).mapRecommendationsToDomain()
     }
 }
 

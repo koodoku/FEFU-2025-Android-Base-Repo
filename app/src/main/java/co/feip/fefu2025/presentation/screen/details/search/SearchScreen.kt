@@ -2,6 +2,7 @@ package co.feip.fefu2025.presentation.screen.details.search
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
@@ -24,7 +25,6 @@ fun SearchScreen(
     onBackClick: () -> Unit,
     onAnimeClick: (Int) -> Unit
 ) {
-
     Column(modifier = Modifier.fillMaxSize()) {
         TopAppBar(
             title = {},
@@ -60,14 +60,11 @@ fun SearchScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-
-        if (state.isLoading) {
+        if (state.isInitialLoading) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
-        }
-
-        else if (state.error != null) {
+        } else if (state.error != null) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(state.error)
@@ -79,8 +76,7 @@ fun SearchScreen(
                     }
                 }
             }
-        }
-        else {
+        } else {
             val list = state.animeList
             if (state.query.isBlank()) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -91,24 +87,47 @@ fun SearchScreen(
                     Text("Ничего не найдено")
                 }
             } else {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.padding(top = 8.dp)
-                ) {
-                    items(list) { anime ->
-                        AnimeCard(
-                            title = anime.title,
-                            genres = anime.genres,
-                            rating = anime.rating ?: 0f,
-                            imageUrl = anime.image,
-                            modifier = Modifier.fillMaxWidth(),
-                            onClick = {
-                                onAnimeClick(anime.id)
+                Box(modifier = Modifier.fillMaxSize()) {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        contentPadding = PaddingValues(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.padding(top = 8.dp)
+                    ) {
+                        items(list) { anime ->
+                            AnimeCard(
+                                title = anime.title,
+                                genres = anime.genres,
+                                rating = anime.rating ?: 0f,
+                                imageUrl = anime.image,
+                                modifier = Modifier.fillMaxWidth(),
+                                onClick = {
+                                    onAnimeClick(anime.id)
+                                }
+                            )
+                        }
+                        
+                        if (state.hasNextPage) {
+                            item(span = { GridItemSpan(2) }) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    if (state.isLoading) {
+                                        CircularProgressIndicator()
+                                    } else {
+                                        Button(
+                                            onClick = { onEvent(SearchScreenEvent.loadNextPage) }
+                                        ) {
+                                            Text("Загрузить еще")
+                                        }
+                                    }
+                                }
                             }
-                        )
+                        }
                     }
                 }
             }

@@ -91,12 +91,9 @@ fun AppNavigation(
             )
         ) { backStackEntry ->
             val animeId = backStackEntry.arguments?.getInt("animeId") ?: 0
-            val parentEntry = remember { navController.getBackStackEntry("${Screen.Details.route}/$animeId") }
-            val sharedViewModel = ViewModelProvider(parentEntry)[AnimeDetailsViewModel::class.java]
             RecommendationsScreen(
                 animeId = animeId,
-                navController = navController,
-                viewModel = sharedViewModel,
+                navController = navController
             )
         }
     }

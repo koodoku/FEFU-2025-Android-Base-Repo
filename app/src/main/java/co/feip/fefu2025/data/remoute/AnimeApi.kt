@@ -12,8 +12,11 @@ interface AnimeApi {
     @GET("top/anime")
     suspend fun getTopAnime(): TopAnimeDto
 
-    @GET("recommendations/anime")
-    suspend fun getRecommendationsAnime(): RecomendationsDto
+    @GET("anime/{id}/recommendations")
+    suspend fun getAnimeRecommendations(
+        @Path("id") id: Int,
+        @Query("page") page: Int = 1
+    ): RecomendationsDto
 
     @GET("anime/{id}")
     suspend fun getAnimeById(@Path("id")id: Int): AnimeDetailsDto
